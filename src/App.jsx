@@ -1,4 +1,4 @@
-import { FaBeer } from 'react-icons/fa';
+
 // socket.io
 import { io } from 'socket.io-client';
 import './App.css';
@@ -10,6 +10,7 @@ import CharWindow from './components/ChatWindow/CharWindow';
 function App() {
 
   const [userName, setUserName] = useState('');
+  const [message, setMessage] = useState('');
 
   const handleSubmit = event => {
     event.preventDefault();
@@ -19,6 +20,12 @@ function App() {
     setUserName(userName);
   }
 
+  const handleMessage = event => {
+    event.preventDefault();
+    const form = event.target;
+    const textMessage = form.textMessage.value;
+    console.log(textMessage);
+  }
   return (
     <>
       <div className={userName ? 'hidden' : 'block'}>
@@ -38,8 +45,17 @@ function App() {
 
       {/* -------Form-------- */}
 
-      {userName ? <CharWindow userName={userName}/> : <Login handleSubmit={handleSubmit}/>
-      
+      {
+        userName ? <CharWindow
+          userName={userName}
+          message={message}
+          setMessage={setUserName}
+          handleMessage={handleMessage}
+        />
+          : <Login
+            handleSubmit={handleSubmit}
+          />
+
       }
 
     </>
