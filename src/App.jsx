@@ -5,6 +5,7 @@ import './App.css';
 import { Player, Controls } from '@lottiefiles/react-lottie-player';
 import { useState } from 'react';
 import Login from './components/LogIn/Login';
+import CharWindow from './components/ChatWindow/CharWindow';
 
 function App() {
 
@@ -36,10 +37,9 @@ function App() {
       </div>
 
       {/* -------Form-------- */}
-      {userName ? 
-      <div className='text-2xl lg:text-7xl text-center Caprasimo mt-10'>Logged in as <span className='text-3xl font-bold'>{userName}</span></div> :
+
+      {userName ? <CharWindow userName={userName}/> : <Login handleSubmit={handleSubmit}/>
       
-        <Login handleSubmit={handleSubmit}/>
       }
 
     </>
