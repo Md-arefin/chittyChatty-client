@@ -1,3 +1,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Caprasimo&family=Merriweather:wght@400;700&display=swap');
+
+.Caprasimo {
+    font-family: 'Caprasimo', cursive;
+}
+
+*{
+    font-family: 'Merriweather', serif;
+}
