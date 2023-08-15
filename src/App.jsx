@@ -4,6 +4,7 @@ import { io } from 'socket.io-client';
 import './App.css';
 import { Player, Controls } from '@lottiefiles/react-lottie-player';
 import { useState } from 'react';
+import Login from './components/LogIn/Login';
 
 function App() {
 
@@ -19,7 +20,7 @@ function App() {
 
   return (
     <>
-      <div className={userName? 'hidden' : 'block'}>
+      <div className={userName ? 'hidden' : 'block'}>
         <div>
           <Player
             autoplay
@@ -35,25 +36,10 @@ function App() {
       </div>
 
       {/* -------Form-------- */}
-      {userName ? <div className='text-2xl lg:text-7xl text-center Caprasimo mt-10'>Logged in as ${userName}</div> :
-        <div className=" w-1/2 mx-auto min-h-screen my-10">
-          <div className="hero-content ">
-            <div className="card w-full shadow-2xl bg-slate-500">
-              <form onSubmit={handleSubmit} className="card-body w-full">
-                <div className="form-control">
-                  <label className="label ">
-                    <span className="label-text text-3xl font-bold text-black ">User name</span>
-                  </label>
-                  <input type="text" name='userName' placeholder="Enter user name..." className="input input-bordered mt-3 text-2xl" required />
-                </div>
-
-                <div className="form-control mt-6">
-                  <input type="submit" value="Join!" className="w-1/2 mx-auto btn bg-black text-2xl" />
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
+      {userName ? 
+      <div className='text-2xl lg:text-7xl text-center Caprasimo mt-10'>Logged in as <span className='text-3xl font-bold'>{userName}</span></div> :
+      
+        <Login handleSubmit={handleSubmit}/>
       }
 
     </>
