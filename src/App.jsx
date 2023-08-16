@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Player, Controls } from '@lottiefiles/react-lottie-player';
 import Login from './components/LogIn/Login';
 import './App.css';
@@ -41,12 +41,22 @@ function App() {
       setUser({ userId, username });
     });
 
-    socket.on("user connected", ({ userId, username}) => {
+    socket.on("user connected", ({ userId, username }) => {
       const newMessage = { type: "UserStatus", userId, username };
-      
+
       setMessages([...messages, newMessage]);
-    })
-  }, [socket, messages])
+    });
+
+    socket.on("new message", ({ userId, username, message }) => {
+      const newMessage = {
+        type: "message",
+        userId: userId,
+        username: username,
+        message
+      };
+      setMessages([...messages, newMessage]);
+    });
+  }, [ messages])
 
 
   // login
@@ -65,13 +75,32 @@ function App() {
   }
 
   // message 
-  const handleMessage = event => {
+  const handleMessage = useCallback (event => {
     event.preventDefault();
     const form = event.target;
     const textMessage = form.textMessage.value;
-    console.log(textMessage);
+    // console.log(textMessage);
     setMessage(textMessage);
-  }
+
+    const newMessage = {
+      type: "message",
+      userId: user.userId,
+      username: user.username,
+      message: textMessage
+    };
+
+    // socket
+    socket.emit("new message", textMessage);
+    // const newMessage = {
+    //   type: "message",
+    //   userId: user.userId,
+    //   username: user.username,
+    //   message: textMessage
+
+    // };
+    setMessages(prevMessages => [...prevMessages, newMessage]);
+    setMessage('');
+  }, [socket, user]);
   return (
     <>
       <div className={user.userId ? 'hidden' : 'block'}>
