@@ -1,34 +1,80 @@
+import { useEffect, useState } from 'react';
+import { Player, Controls } from '@lottiefiles/react-lottie-player';
+import Login from './components/LogIn/Login';
+import './App.css';
+import CharWindow from './components/ChatWindow/CharWindow';
 
 // socket.io
 import { io } from 'socket.io-client';
-import './App.css';
-import { Player, Controls } from '@lottiefiles/react-lottie-player';
-import { useState } from 'react';
-import Login from './components/LogIn/Login';
-import CharWindow from './components/ChatWindow/CharWindow';
+
+const socket = io('http://localhost:5000');
 
 function App() {
 
-  const [userName, setUserName] = useState('');
+  const [newUser, setNewUser] = useState('');
+  const [user, setUser] = useState({});
+  const [users, setUsers] = useState([]);
   const [message, setMessage] = useState('');
+  const [messages, setMessages] = useState([]);
 
+
+
+  useEffect(() => {
+    socket.on("users", (users) => {
+      console.log(users);
+
+      const messagesArr = [];
+
+      for (const { userId, username } of users) {
+
+        const newMessage = { type: "UserStatus", userId, username };
+
+        messagesArr.push(newMessage);
+      }
+
+      setMessages([...messages, ...messagesArr]);
+      setUsers(users);
+    });
+
+    // first
+    socket.on("session", ({ userId, username }) => {
+      setUser({ userId, username });
+    });
+
+    socket.on("user connected", ({ userId, username}) => {
+      const newMessage = { type: "UserStatus", userId, username };
+      
+      setMessages([...messages, newMessage]);
+    })
+  }, [socket, messages])
+
+
+  // login
   const handleSubmit = event => {
     event.preventDefault();
     const form = event.target;
     const userName = form.userName.value;
+    console.log(userName);
+    setNewUser(userName);
 
-    setUserName(userName);
+    // setUser
+    setUser(newUser);
+    // socket
+    socket.auth = { username: newUser };
+    socket.connect();
   }
 
+  // message 
   const handleMessage = event => {
     event.preventDefault();
     const form = event.target;
     const textMessage = form.textMessage.value;
     console.log(textMessage);
+    setMessage(textMessage);
   }
   return (
     <>
-      <div className={userName ? 'hidden' : 'block'}>
+      <div className={user.userId ? 'hidden' : 'block'}>
         <div>
           <Player
             autoplay
@@ -46,16 +92,15 @@ function App() {
       {/* -------Form-------- */}
 
       {
-        userName ? <CharWindow
-          userName={userName}
+        user.userId ? <CharWindow
+          user={user}
           message={message}
-          setMessage={setUserName}
+          messages={messages}
           handleMessage={handleMessage}
         />
           : <Login
             handleSubmit={handleSubmit}
           />
-
       }
 
     </>
