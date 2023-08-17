@@ -7,6 +7,7 @@ import CharWindow from './components/ChatWindow/CharWindow';
 // socket.io
 import { io } from 'socket.io-client';
 
+// const socket = io('https://chittychatty-server.onrender.com');
 const socket = io('http://localhost:5000');
 
 function App() {
