@@ -101,7 +101,7 @@ function App() {
           <Player
             autoplay
             loop
-            src="https://lottie.host/615840d2-e7ec-4093-9a2f-19c103614a02/8G8ZWN8QRD.json"
+            src="https://lottie.host/aacf9ba2-bc1c-4ae8-b6b5-d5772d78ac16/K47dHc1US0.json"
             style={{ height: '300px', width: '300px' }}
           >
             <Controls visible={!true} buttons={['play', 'repeat', 'frame', 'debug']} />
