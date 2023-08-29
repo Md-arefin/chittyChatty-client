@@ -33,7 +33,7 @@ const CharWindow = ({ user, messages, handleMessage }) => {
                             ) :
                                 <div key={i} className={message.userId === user.userId ? "flex ml-auto pb-4 " : 'mr-auto pb-4 flex-row-reverse'}>
 
-                                    <div>
+                                    <div className={message.userId === user.userId ? "flex flex-row-reverse ml-auto pb-4 " : 'flex mr-auto pb-4 '}>
                                         <div className="avatar">
                                             <div className="w-16 rounded-full mr-1">
                                                 <img

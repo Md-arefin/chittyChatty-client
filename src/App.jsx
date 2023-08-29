@@ -19,33 +19,24 @@ function App() {
   const [messages, setMessages] = useState([]);
 
 
-
   useEffect(() => {
     socket.on("users", (users) => {
-      console.log(users);
-
-      const messagesArr = [];
-
-      for (const { userId, username } of users) {
-
-        const newMessage = { type: "UserStatus", userId, username };
-
-        messagesArr.push(newMessage);
-      }
-
-      setMessages([...messages, ...messagesArr]);
+      const messagesArr = users.map(({ userId, username }) => ({
+        type: "UserStatus",
+        userId,
+        username
+      }));
+      setMessages([...messages, ...messagesArr])
       setUsers(users);
     });
 
-    // first
     socket.on("session", ({ userId, username }) => {
       setUser({ userId, username });
     });
 
     socket.on("user connected", ({ userId, username }) => {
       const newMessage = { type: "UserStatus", userId, username };
-
-      setMessages([...messages, newMessage]);
+      setMessages(prevMessages => [...prevMessages, newMessage]);
     });
 
     socket.on("new message", ({ userId, username, message }) => {
@@ -55,11 +46,18 @@ function App() {
         username: username,
         message
       };
-      setMessages([...messages, newMessage]);
+      setMessages(prevMessages => [...prevMessages, newMessage]);
     });
-  }, [])
 
-//  
+    return () => {
+      socket.off("users");
+      socket.off("session");
+      socket.off("user connected");
+      socket.off("new message");
+    };
+  }, [messages]);
+
+  
   // login
   const handleSubmit = event => {
     event.preventDefault();
@@ -83,24 +81,18 @@ function App() {
     // console.log(textMessage);
     setMessage(textMessage);
 
-    const newMessage = {
-      type: "message",
-      userId: user.userId,
-      username: user.username,
-      message: textMessage
-    };
+    socket.emit("new message", textMessage, () => {
+      // After the message is sent successfully, update the state
+      const newMessage = {
+        type: "message",
+        userId: user.userId,
+        username: user.username,
+        message: textMessage
+      };
+      setMessages(prevMessages => [...prevMessages, newMessage]);
+      setMessage('');
+    });
 
-    // socket
-    socket.emit("new message", textMessage);
-    // const newMessage = {
-    //   type: "message",
-    //   userId: user.userId,
-    //   username: user.username,
-    //   message: textMessage
-
-    // };
-    setMessages(prevMessages => [...prevMessages, newMessage]);
-    setMessage('');
   }, [socket, user]);
   return (
     <>
