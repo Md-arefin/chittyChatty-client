@@ -57,9 +57,9 @@ function App() {
       };
       setMessages([...messages, newMessage]);
     });
-  }, [ messages])
+  }, [])
 
-
+//  
   // login
   const handleSubmit = event => {
     event.preventDefault();
